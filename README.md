@@ -9,3 +9,7 @@ npm install
 ```
 npm run start
 ```
+
+
+### Workspace Intro
+![Workspace Intro Image](https://github.com/dependerCompro/poc-ai-workflow/blob/main/Workspace_Intro.png?raw=true)
