@@ -1,4 +1,4 @@
-# ai-workflow-3
+# POC AI Workflow
 
 ## Project setup
 ```
