@@ -21,6 +21,18 @@
         <Icon name="log" />
       </ControlButton>
     </Controls>
+    <template #node-input-prompt>
+      <InputPromptNode />
+    </template>
+    <template #node-input-data>
+      <InputDataNode />
+    </template>
+    <template #node-processor>
+      <ProcessorNode />
+    </template>
+    <template #node-result-output>
+      <OutputNode />
+    </template>
   </VueFlow>
 </template>
 
@@ -33,12 +45,21 @@ import { MiniMap } from '@vue-flow/minimap'
 import Icon from './components/ControlIcons.vue'
 import SideBar from './components/SideBar.vue'
 import { useDragAndDropStore } from '@/stores/index.js';
+import InputPromptNode from '@/components/InputPromptNode.vue';
+import InputDataNode from '@/components/InputDataNode.vue';
+import ProcessorNode from '@/components/ProcessorNode.vue';
+import OutputNode from '@/components/OutputNode.vue';
 
-const { onNodeDragStop, onConnect, setViewport, toObject, screenToFlowCoordinate } = useVueFlow()
+const { onNodeDragStop, onConnect, setViewport, toObject, screenToFlowCoordinate, onNodeClick, onPaneClick } = useVueFlow()
 
 const dark = ref(false)
 const store = useDragAndDropStore()
-const nodeCount = ref(0)
+const nodeCount = ref({
+  "input-prompt": 0,
+  "input-data": 0,
+  "processor": 0,
+  "result-output": 0
+})
 
 const draggedType = computed(() => store.draggedType)
 const isDragging = computed(() => store.isDragging)
@@ -64,7 +85,7 @@ const logToObject = () => {
 
 const getNewNodeId = (type) => {
   const timeStamp = Date.now()
-  return `${timeStamp}-${type}-${nodeCount.value++}`
+  return `${timeStamp}-${type}-${nodeCount.value[type]++}`
 }
 
 const getNewEdgeId = (src, tgt) => {
@@ -73,19 +94,19 @@ const getNewEdgeId = (src, tgt) => {
 
 const onDrop = (event) => {
   const position = screenToFlowCoordinate({
-    x: event.clientX - 75, // - 275 - 75,
-    y: event.clientY - 18, // - 18,
+    x: event.clientX,
+    y: event.clientY,
   })
-
   const nodeId = getNewNodeId(draggedType.value)
 
   const newNode = {
     id: nodeId,
     type: draggedType.value,
     position: position,
-    data: { label: `${draggedType.value} ${nodeCount.value}` },
+    data: { userInput: "" },
   }
   nodes.value.push(newNode)
+  store.activeNodeId = nodeId;
 }
 
 const onDragOver = (event) => {
@@ -120,6 +141,14 @@ onConnect((event) => {
     animated: true,
   }
   edges.value.push(newEdge);
+})
+
+onNodeClick((event) => {
+  store.activeNodeId = event.node.id;
+})
+
+onPaneClick(() => {
+  store.activeNodeId = "";
 })
 </script>
 

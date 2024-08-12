@@ -3,12 +3,10 @@
     <div class="description">You can drag these nodes to the pane.</div>
 
     <div class="nodes">
-      <div class="vue-flow__node-input" :draggable="true" @dragstart="onDragStart($event, 'input')">Input Node</div>
-
-      <div class="vue-flow__node-default" :draggable="true" @dragstart="onDragStart($event, 'processor')">Processor Node
-      </div>
-
-      <div class="vue-flow__node-output" :draggable="true" @dragstart="onDragStart($event, 'output')">Output Node</div>
+      <div class="vue-flow__node-input" :draggable="true" @dragstart="onDragStart($event, 'input-prompt')">Input ( Prompt )</div>
+      <div class="vue-flow__node-default" :draggable="true" @dragstart="onDragStart($event, 'input-data')">input ( Data )</div>
+      <div class="vue-flow__node-output" :draggable="true" @dragstart="onDragStart($event, 'processor')">Processor</div>
+      <div class="vue-flow__node-output" :draggable="true" @dragstart="onDragStart($event, 'result-output')">Output</div>
     </div>
   </aside>
 </template>
