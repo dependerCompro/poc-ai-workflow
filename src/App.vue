@@ -93,9 +93,14 @@ const getNewEdgeId = (src, tgt) => {
 }
 
 const onDrop = (event) => {
+  event.preventDefault();
+
+  const vueFlowContainer = event.target.closest('.basic-flow');
+  const boundingBox = vueFlowContainer.getBoundingClientRect();
+
   const position = screenToFlowCoordinate({
-    x: event.clientX,
-    y: event.clientY,
+    x: event.clientX - boundingBox.left / 2,
+    y: event.clientY - boundingBox.top / 2,
   })
   const nodeId = getNewNodeId(draggedType.value)
 
@@ -123,11 +128,10 @@ const onDragLeave = () => {
   store.isDragOver = false
 }
 
-onNodeDragStop(({ event, node }) => {
+onNodeDragStop(({ node }) => {
   nodes.value.forEach((obj) => {
     if (obj.id == node.id) {
-      obj.position.x = event.clientX - 75 - 275;
-      obj.position.y = event.clientY - 18;
+      obj.position = { ...node.position };
     }
   })
 })
