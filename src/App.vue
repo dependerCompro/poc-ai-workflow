@@ -38,7 +38,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { VueFlow, useVueFlow } from '@vue-flow/core'
+import { VueFlow, useVueFlow, MarkerType } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { ControlButton, Controls } from '@vue-flow/controls'
 import { MiniMap } from '@vue-flow/minimap'
@@ -50,7 +50,7 @@ import InputDataNode from '@/components/InputDataNode.vue';
 import ProcessorNode from '@/components/ProcessorNode.vue';
 import OutputNode from '@/components/OutputNode.vue';
 
-const { onNodeDragStop, onConnect, setViewport, toObject, screenToFlowCoordinate, onNodeClick, onPaneClick } = useVueFlow()
+const { onNodeDragStop, onConnect, setViewport, toObject, screenToFlowCoordinate, onNodeClick, onEdgeClick, onPaneClick } = useVueFlow()
 
 const dark = ref(false)
 const store = useDragAndDropStore()
@@ -143,16 +143,27 @@ onConnect((event) => {
     source: event.source,
     target: event.target,
     animated: true,
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      width: 25,
+      height: 25,
+    }
   }
   edges.value.push(newEdge);
+  store.activeEdgeId = edgeId;
 })
 
 onNodeClick((event) => {
   store.activeNodeId = event.node.id;
 })
 
+onEdgeClick((event) => {
+  store.activeEdgeId = event.edge.id;
+})
+
 onPaneClick(() => {
   store.activeNodeId = "";
+  store.activeEdgeId = "";
 })
 </script>
 
