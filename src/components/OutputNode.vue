@@ -1,5 +1,5 @@
 <template>
-    <div class="output-node-wrapper">
+    <div :class="(store.darkMode) ? 'output-node-wrapper-dark' : 'output-node-wrapper'">
         <div class="output-node-wrapper__head">
             <p>{{ headContent }}</p>
         </div>
@@ -51,6 +51,34 @@ watch(userInput, (input) => {
         textarea {
             height: 100%;
             padding: 8px;
+        }
+    }
+}
+.output-node-wrapper-dark {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    background-color: #434343;
+    border: 1px solid green;
+    padding: 8px;
+    width: 280px;
+    height: 350px;
+
+    .output-node-wrapper__head{
+        width: 100%;
+    }
+
+    .output-node-wrapper__text-area {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+
+        textarea {
+            height: 100%;
+            padding: 8px;
+            color: white;
+            background-color: #545454;
         }
     }
 }

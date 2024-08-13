@@ -52,7 +52,6 @@ import OutputNode from '@/components/OutputNode.vue';
 
 const { onNodeDragStop, onConnect, setViewport, toObject, screenToFlowCoordinate, onNodeClick, onEdgeClick, onPaneClick } = useVueFlow()
 
-const dark = ref(false)
 const store = useDragAndDropStore()
 const nodeCount = ref({
   "input-prompt": 0,
@@ -66,13 +65,14 @@ const isDragging = computed(() => store.isDragging)
 const isDragOver = computed(() => store.isDragOver)
 const nodes = computed(() => store.nodes)
 const edges = computed(() => store.edges)
+let dark = computed(() => store.darkMode)
 
 watch(isDragging, (dragging) => {
   document.body.style.userSelect = dragging ? 'none' : ''
 })
 
 const toggleDarkMode = () => {
-  dark.value = !dark.value
+  store.darkMode = !store.darkMode;
 }
 
 const resetTransform = () => {

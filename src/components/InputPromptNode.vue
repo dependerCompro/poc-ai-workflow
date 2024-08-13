@@ -1,5 +1,5 @@
 <template>
-    <div class="input-prompt-node-wrapper">
+    <div :class="(store.darkMode) ? 'input-prompt-node-wrapper-dark' : 'input-prompt-node-wrapper'">
         <div class="input-prompt-node-wrapper__head">
             <p>{{ headContent }}</p>
         </div>
@@ -33,12 +33,12 @@ watch(userInput, (input) => {
     display: flex;
     flex-direction: column;
     background-color: white;
-    border: 1px solid blue;
+    border: 1px solid rgb(70, 187, 237);
     padding: 8px;
     width: 280px;
     height: 350px;
 
-    .input-prompt-node-wrapper__head{
+    .input-prompt-node-wrapper__head {
         width: 100%;
     }
 
@@ -51,6 +51,35 @@ watch(userInput, (input) => {
         textarea {
             height: 100%;
             padding: 8px;
+        }
+    }
+}
+
+.input-prompt-node-wrapper-dark {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    background-color: #434343;
+    border: 1px solid rgb(70, 187, 237);
+    padding: 8px;
+    width: 280px;
+    height: 350px;
+
+    .input-prompt-node-wrapper__head {
+        width: 100%;
+    }
+
+    .input-prompt-node-wrapper__text-area {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+
+        textarea {
+            height: 100%;
+            padding: 8px;
+            color: white;
+            background-color: #545454;
         }
     }
 }
