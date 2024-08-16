@@ -3,7 +3,7 @@
   <VueFlow :nodes="nodes" :edges="edges" :class="{ dark }" class="basic-flow" @drop="onDrop" @dragover="onDragOver"
     @dragleave="onDragLeave" :min-zoom="0.2" :max-zoom="4">
     <Background :style="{
-      backgroundColor: isDragOver ? '#e7f3ff' : 'transparent',
+      backgroundColor: isDragOver ? (dark ? '#2d3738': '#e7f3ff') : 'transparent',
       transition: 'background-color 0.2s ease',
     }" pattern-color="#aaa" :gap="16" />
 
@@ -155,10 +155,12 @@ onConnect((event) => {
 
 onNodeClick((event) => {
   store.activeNodeId = event.node.id;
+  store.activeEdgeId = "";
 })
 
 onEdgeClick((event) => {
   store.activeEdgeId = event.edge.id;
+  store.activeNodeId = "";
 })
 
 onPaneClick(() => {
