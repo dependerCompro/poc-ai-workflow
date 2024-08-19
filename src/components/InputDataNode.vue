@@ -1,6 +1,7 @@
 <template>
     <NodeResizer v-if="props.data.inFocus" min-width="280" min-height="180" />
     <div :class="(store.darkMode) ? 'input-data-node-wrapper-dark': 'input-data-node-wrapper'">
+        <button v-if="props.data.inFocus" @click="deleteNode()" class="input-data-node-wrapper__close-button">×</button>
         <div class="input-data-node-wrapper__head">
             <p>{{ headContent }}</p>
         </div>
@@ -28,6 +29,10 @@ const props = defineProps({
   }
 })
 
+const deleteNode = () => {
+    store.nodes = store.nodes.filter(obj => obj.id != store.activeNodeId);
+}
+
 watch(userInput, (input) => {
     store.nodes.forEach((node) => {
         if (node.id == store.activeNodeId) {
@@ -47,6 +52,26 @@ watch(userInput, (input) => {
     min-height: 180px;
     min-width: 280px;
     align-items: center;
+
+    .input-data-node-wrapper__close-button {
+        cursor: pointer;
+        border: 1px solid red;
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        align-items: center;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        background-color: rgb(255, 96, 96);
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translate(-50%, -50%);
+    }
 
     .input-data-node-wrapper__head{
         width: 100%;
@@ -77,6 +102,26 @@ watch(userInput, (input) => {
     min-height: 180px;
     min-width: 280px;
     align-items: center;
+
+    .input-data-node-wrapper__close-button {
+        cursor: pointer;
+        border: 1px solid red;
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        align-items: center;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        background-color: rgb(255, 96, 96);
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translate(-50%, -50%);
+    }
 
     .input-data-node-wrapper__head{
         width: 100%;
