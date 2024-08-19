@@ -21,17 +21,17 @@
         <Icon name="log" />
       </ControlButton>
     </Controls>
-    <template #node-input-prompt>
-      <InputPromptNode />
+    <template #node-input-prompt="props">
+      <InputPromptNode :data="props.data" />
     </template>
-    <template #node-input-data>
-      <InputDataNode />
+    <template #node-input-data="props">
+      <InputDataNode :data="props.data" />
     </template>
-    <template #node-processor>
-      <ProcessorNode />
+    <template #node-processor="props">
+      <ProcessorNode :data="props.data" />
     </template>
-    <template #node-result-output>
-      <OutputNode />
+    <template #node-result-output="props">
+      <OutputNode :data="props.data" />
     </template>
   </VueFlow>
 </template>
@@ -92,6 +92,16 @@ const getNewEdgeId = (src, tgt) => {
   return src + "___" + tgt;
 }
 
+const updateFocusNodeData = (nodeId) => {
+  store.nodes.forEach((node) => {
+        if (node.id == nodeId) {
+          node.data.inFocus = true;
+        } else {
+          node.data.inFocus = false;
+        }
+    })
+}
+
 const onDrop = (event) => {
   event.preventDefault();
 
@@ -103,15 +113,18 @@ const onDrop = (event) => {
     y: event.clientY - boundingBox.top / 2,
   })
   const nodeId = getNewNodeId(draggedType.value)
-
   const newNode = {
     id: nodeId,
     type: draggedType.value,
     position: position,
-    data: { userInput: "" },
+    data: {
+      userInput: "",
+      inFocus: false
+    },
   }
   nodes.value.push(newNode)
   store.activeNodeId = nodeId;
+  updateFocusNodeData(nodeId);
 }
 
 const onDragOver = (event) => {
@@ -155,6 +168,7 @@ onConnect((event) => {
 
 onNodeClick((event) => {
   store.activeNodeId = event.node.id;
+  updateFocusNodeData(event.node.id)
   store.activeEdgeId = "";
 })
 
@@ -166,6 +180,9 @@ onEdgeClick((event) => {
 onPaneClick(() => {
   store.activeNodeId = "";
   store.activeEdgeId = "";
+  // passing null to updateFocusNodeData so that inFocus
+  // is set to false for every node.
+  updateFocusNodeData('');
 })
 </script>
 

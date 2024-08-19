@@ -1,4 +1,5 @@
 <template>
+    <NodeResizer v-if="props.data.inFocus" min-width="280" min-height="180" />
     <div :class="(store.darkMode) ? 'processor-node-wrapper-dark' : 'processor-node-wrapper'">
         <div class="processor-node-wrapper__head">
             <p>{{ headContent }}</p>
@@ -12,13 +13,21 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, defineProps } from 'vue'
 import { Handle, Position } from '@vue-flow/core'
 import { useDragAndDropStore } from '@/stores';
+import { NodeResizer } from '@vue-flow/node-resizer'
 
 const userInput = ref('')
 const store = useDragAndDropStore()
 const headContent = ref('Please describe the process')
+
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true
+  }
+})
 
 watch(userInput, (input) => {
     store.nodes.forEach((node) => {
@@ -29,15 +38,16 @@ watch(userInput, (input) => {
 })
 </script>
 
-<style>
+<style scoped>
 .processor-node-wrapper {
     display: flex;
     flex-direction: column;
     background-color: white;
     border: 1px solid orange;
-    padding: 8px;
-    width: 280px;
-    height: 350px;
+    height: 100%;
+    min-height: 180px;
+    min-width: 280px;
+    align-items: center;
 
     .processor-node-wrapper__head{
         width: 100%;
@@ -52,6 +62,8 @@ watch(userInput, (input) => {
         textarea {
             height: 100%;
             padding: 8px;
+            margin: 8px;
+            resize: none;
         }
     }
 }
@@ -61,9 +73,10 @@ watch(userInput, (input) => {
     color: white;
     background-color: #434343;
     border: 1px solid orange;
-    padding: 8px;
-    width: 280px;
-    height: 350px;
+    height: 100%;
+    min-height: 180px;
+    min-width: 280px;
+    align-items: center;
 
     .processor-node-wrapper__head{
         width: 100%;
@@ -80,6 +93,8 @@ watch(userInput, (input) => {
             padding: 8px;
             color: white;
             background-color: #545454;
+            margin: 8px;
+            resize: none;
         }
     }
 }
