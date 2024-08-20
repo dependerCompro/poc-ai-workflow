@@ -29,8 +29,13 @@ const props = defineProps({
   }
 })
 
+function deleteEdgeWithNode(nodeId) {
+  store.edges = store.edges.filter(obj => (obj.source != nodeId && obj.target != nodeId));
+}
+
 const deleteNode = () => {
     store.nodes = store.nodes.filter(obj => obj.id != store.activeNodeId);
+    deleteEdgeWithNode(store.activeNodeId);
 }
 
 watch(userInput, (input) => {

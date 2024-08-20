@@ -1,7 +1,7 @@
 <template>
   <SideBar />
   <VueFlow :nodes="nodes" :edges="edges" :class="{ dark }" class="basic-flow" @drop="onDrop" @dragover="onDragOver"
-    @dragleave="onDragLeave" :min-zoom="0.2" :max-zoom="4">
+    @dragleave="onDragLeave" @edge-update="onEdgeUpdate" :min-zoom="0.2" :max-zoom="4">
     <Background :style="{
       backgroundColor: isDragOver ? (dark ? '#2d3738': '#e7f3ff') : 'transparent',
       transition: 'background-color 0.2s ease',
@@ -141,6 +141,12 @@ const onDragLeave = () => {
   store.isDragOver = false
 }
 
+function removeDuplicateEdges() {
+  store.edges = store.edges.filter((value, index, self) => 
+    index === self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
+  );
+}
+
 onNodeDragStop(({ node }) => {
   nodes.value.forEach((obj) => {
     if (obj.id == node.id) {
@@ -149,12 +155,12 @@ onNodeDragStop(({ node }) => {
   })
 })
 
-onConnect((event) => {
-  const edgeId = getNewEdgeId(event.source, event.target);
-  const newEdge = {
+function createEdge(edgeId, source, target) {
+  return {
     id: edgeId,
-    source: event.source,
-    target: event.target,
+    source: source,
+    target: target,
+    updatable: true,
     animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,
@@ -162,24 +168,42 @@ onConnect((event) => {
       height: 25,
     }
   }
+}
+
+function addNewEdge(source, target) {
+  const edgeId = getNewEdgeId(source, target);
+  const newEdge = createEdge(edgeId, source, target);
   edges.value.push(newEdge);
-  store.activeEdgeId = edgeId;
+  removeDuplicateEdges();
+}
+
+onConnect((event) => {
+  addNewEdge(event.source, event.target)
 })
+
+function deleteEdgeWithId(edgeId) {
+  store.edges = store.edges.filter(obj => obj.id != edgeId);
+}
+
+function onEdgeUpdate({ edge, connection }) {
+  deleteEdgeWithId(edge.id);
+  addNewEdge(connection.source, connection.target);
+}
 
 onNodeClick((event) => {
   store.activeNodeId = event.node.id;
   updateFocusNodeData(event.node.id)
-  store.activeEdgeId = "";
 })
 
-onEdgeClick((event) => {
-  store.activeEdgeId = event.edge.id;
+onEdgeClick(() => {
   store.activeNodeId = "";
+  // passing null to updateFocusNodeData so that inFocus
+  // is set to false for every node.
+  updateFocusNodeData('');
 })
 
 onPaneClick(() => {
   store.activeNodeId = "";
-  store.activeEdgeId = "";
   // passing null to updateFocusNodeData so that inFocus
   // is set to false for every node.
   updateFocusNodeData('');

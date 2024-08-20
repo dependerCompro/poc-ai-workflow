@@ -6,17 +6,8 @@ export const useDragAndDropStore = defineStore('dragAndDropStore', {
       isDragging: false,
       isDragOver: false,
       activeNodeId: '',
-      activeEdgeId: '',
       darkMode: false,
       nodes: [],
       edges: [],
-    }),
-    // getters: {
-    //   doubleCount: (state) => state.count * 2,
-    // },
-    // actions: {
-    //   increment() {
-    //     this.count++
-    //   },
-    // },
+    })
   })
