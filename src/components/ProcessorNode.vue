@@ -84,12 +84,14 @@ watch(userInput, (input) => {
     }
 
     .processor-node-wrapper__text-area {
+        flex: 1;
         display: flex;
         flex-direction: column;
         width: 100%;
         height: 100%;
 
         textarea {
+            flex: 1;
             height: 100%;
             padding: 8px;
             margin: 8px;
@@ -134,12 +136,14 @@ watch(userInput, (input) => {
     }
 
     .processor-node-wrapper__text-area {
+        flex: 1;
         display: flex;
         flex-direction: column;
         width: 100%;
         height: 100%;
 
         textarea {
+            flex: 1;
             height: 100%;
             padding: 8px;
             color: white;
