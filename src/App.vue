@@ -22,16 +22,16 @@
       </ControlButton>
     </Controls>
     <template #node-input-prompt="props">
-      <InputPromptNode :data="props.data" />
+      <NodeComponent :data="props.data" :type="props.type"/>
     </template>
     <template #node-input-data="props">
-      <InputDataNode :data="props.data" />
+      <NodeComponent :data="props.data" :type="props.type"/>
     </template>
     <template #node-processor="props">
-      <ProcessorNode :data="props.data" />
+      <NodeComponent :data="props.data" :type="props.type"/>
     </template>
     <template #node-result-output="props">
-      <OutputNode :data="props.data" />
+      <NodeComponent :data="props.data" :type="props.type"/>
     </template>
   </VueFlow>
 </template>
@@ -42,13 +42,10 @@ import { VueFlow, useVueFlow, MarkerType } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { ControlButton, Controls } from '@vue-flow/controls'
 import { MiniMap } from '@vue-flow/minimap'
-import Icon from './components/ControlIcons.vue'
-import SideBar from './components/SideBar.vue'
 import { useDragAndDropStore } from '@/stores/index.js';
-import InputPromptNode from '@/components/InputPromptNode.vue';
-import InputDataNode from '@/components/InputDataNode.vue';
-import ProcessorNode from '@/components/ProcessorNode.vue';
-import OutputNode from '@/components/OutputNode.vue';
+import Icon from './components/ControlIcons'
+import SideBar from './components/SideBar'
+import NodeComponent from '@/components/NodeComponent';
 
 const { onNodeDragStop, onConnect, setViewport, toObject, screenToFlowCoordinate, onNodeClick, onEdgeClick, onPaneClick } = useVueFlow()
 

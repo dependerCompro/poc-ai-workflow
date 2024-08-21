@@ -1,33 +1,44 @@
 <template>
     <NodeResizer v-if="props.data.inFocus" min-width="280" min-height="180" />
-    <div :class="(store.darkMode) ? 'output-node-wrapper-dark' : 'output-node-wrapper'">
-        <button v-if="props.data.inFocus" @click="deleteNode()" class="output-node-wrapper__close-button">×</button>
-        <div class="output-node-wrapper__head">
+    <div class="node-wrapper" :class="(store.darkMode) ? 'node-wrapper-dark': ''" :style="{'--border-color': nodeConfig[props.type].nodeBorderColor}">
+        <button v-if="props.data.inFocus" @click="deleteNode()" class="node-wrapper__close-button">×</button>
+        <div class="node-wrapper__head">
             <p>{{ headContent }}</p>
         </div>
-        <div class="output-node-wrapper__text-area">
-            <textarea v-model="userInput" placeholder="Output Logs"></textarea>
+        <div class="node-wrapper__text-area">
+            <textarea v-model="userInput" :placeholder="textareaPlaceHolder"></textarea>
         </div>
     </div>
-    <Handle type="target" :position="Position.Left" />
+    <Handle
+        v-for="(handle, index) in nodeConfig[props.type].handle"
+        :key="index"
+        :type="handle.type"
+        :position="handle.position"
+    />
 </template>
 
 <script setup>
 import { ref, watch, defineProps } from 'vue'
-import { Handle, Position } from '@vue-flow/core'
+import { Handle } from '@vue-flow/core'
 import { useDragAndDropStore } from '@/stores';
-import { NodeResizer } from '@vue-flow/node-resizer'
-
-const userInput = ref('')
-const store = useDragAndDropStore()
-const headContent = ref('Output')
+import { NodeResizer } from '@vue-flow/node-resizer';
+import nodeConfig from '@/config/nodeConfig';
 
 const props = defineProps({
   data: {
     type: Object,
     required: true
+  },
+  type: {
+    type: String,
+    require: true
   }
 })
+
+const userInput = ref('')
+const store = useDragAndDropStore();
+const headContent = nodeConfig[props.type].nodeHeadContent;
+const textareaPlaceHolder = nodeConfig[props.type].nodeTextareaPlaceholder;
 
 function deleteEdgeWithNode(nodeId) {
   store.edges = store.edges.filter(obj => (obj.source != nodeId && obj.target != nodeId));
@@ -48,17 +59,17 @@ watch(userInput, (input) => {
 </script>
 
 <style scoped>
-.output-node-wrapper {
+.node-wrapper {
     display: flex;
     flex-direction: column;
     background-color: white;
-    border: 1px solid green;
+    border: 1px solid var(--border-color);
     height: 100%;
     min-height: 180px;
     min-width: 280px;
     align-items: center;
 
-    .output-node-wrapper__close-button {
+    .node-wrapper__close-button {
         cursor: pointer;
         border: 1px solid red;
         display: flex;
@@ -78,17 +89,17 @@ watch(userInput, (input) => {
         transform: translate(-50%, -50%);
     }
 
-    .output-node-wrapper__head {
+    .node-wrapper__head{
         width: 100%;
     }
 
-    .output-node-wrapper__text-area {
+    .node-wrapper__text-area {
         flex: 1;
         display: flex;
         flex-direction: column;
         width: 100%;
         height: 100%;
-
+        
         textarea {
             flex: 1;
             height: 100%;
@@ -98,56 +109,15 @@ watch(userInput, (input) => {
         }
     }
 }
-.output-node-wrapper-dark {
-    display: flex;
-    flex-direction: column;
+
+.node-wrapper-dark {
     color: white;
     background-color: #434343;
-    border: 1px solid green;
-    height: 100%;
-    min-height: 180px;
-    min-width: 280px;
-    align-items: center;
 
-    .output-node-wrapper__close-button {
-        cursor: pointer;
-        border: 1px solid red;
-        display: flex;
-        justify-content: center;
-        margin: 0;
-        align-items: center;
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        background-color: rgb(255, 96, 96);
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        transform: translate(-50%, -50%);
-    }
-
-    .output-node-wrapper__head{
-        width: 100%;
-    }
-
-    .output-node-wrapper__text-area {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-
+    .node-wrapper__text-area {
         textarea {
-            flex: 1;
-            height: 100%;
-            padding: 8px;
             color: white;
             background-color: #545454;
-            margin: 8px;
-            resize: none;
         }
     }
 }
