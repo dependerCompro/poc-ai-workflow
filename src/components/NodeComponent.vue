@@ -64,7 +64,7 @@ const debounceUpdate = (input) => {
     }
     debounceTimeout = setTimeout(() => {
         store.updateUserInputToNode(props.id, input);
-    }, 5000);
+    }, 500);
 }
 </script>
 

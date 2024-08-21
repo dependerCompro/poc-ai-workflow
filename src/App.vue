@@ -60,7 +60,7 @@ const nodeCount = ref({
   "result-output": 0
 })
 const flowKey = 'vue-flow--save-restore';
-
+let debounceTimeout = null;
 const draggedType = computed(() => store.draggedType)
 const isDragging = computed(() => store.isDragging)
 const isDragOver = computed(() => store.isDragOver)
@@ -83,8 +83,17 @@ watch(isDragging, (dragging) => {
 })
 
 watch(vueFlowObj, () => {
-  localStorage.setItem(flowKey, JSON.stringify(toObject()))
+  debounceUpdate();
 })
+
+const debounceUpdate = () => {
+  if (debounceTimeout) {
+    clearTimeout(debounceTimeout)
+  }
+  debounceTimeout = setTimeout(() => {
+    localStorage.setItem(flowKey, JSON.stringify(toObject()));
+  }, 500);
+}
 
 const eraseAll = () => {
   localStorage.setItem(flowKey, '');
