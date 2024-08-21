@@ -10,6 +10,9 @@
     <MiniMap pannable zoomable />
 
     <Controls position="top-right">
+      <ControlButton title="Erase all" @click="eraseAll">
+        <Icon name="erase" />
+      </ControlButton>
       <ControlButton title="Reset Transform" @click="resetTransform">
         <Icon name="reset" />
       </ControlButton>
@@ -37,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onBeforeMount } from 'vue'
 import { VueFlow, useVueFlow, MarkerType } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { ControlButton, Controls } from '@vue-flow/controls'
@@ -47,7 +50,7 @@ import Icon from './components/ControlIcons'
 import SideBar from './components/SideBar'
 import NodeComponent from '@/components/NodeComponent';
 
-const { onNodeDragStop, onConnect, setViewport, toObject, screenToFlowCoordinate, onNodeClick, onEdgeClick, onPaneClick } = useVueFlow()
+const { onNodeDragStop, onConnect, setViewport, toObject, fromObject, screenToFlowCoordinate, onNodeClick, onEdgeClick, onPaneClick } = useVueFlow()
 
 const store = useDragAndDropStore()
 const nodeCount = ref({
@@ -56,6 +59,7 @@ const nodeCount = ref({
   "processor": 0,
   "result-output": 0
 })
+const flowKey = 'vue-flow--save-restore';
 
 const draggedType = computed(() => store.draggedType)
 const isDragging = computed(() => store.isDragging)
@@ -63,10 +67,30 @@ const isDragOver = computed(() => store.isDragOver)
 const nodes = computed(() => store.nodes)
 const edges = computed(() => store.edges)
 let dark = computed(() => store.darkMode)
+let vueFlowObj = computed(() => toObject())
+
+onBeforeMount(() => {
+  const flow = JSON.parse(localStorage.getItem(flowKey));
+  if (flow) {
+    store.nodes = flow.nodes;
+    store.edges = flow.edges;
+    fromObject(flow)
+  }
+})
 
 watch(isDragging, (dragging) => {
   document.body.style.userSelect = dragging ? 'none' : ''
 })
+
+watch(vueFlowObj, () => {
+  localStorage.setItem(flowKey, JSON.stringify(toObject()))
+})
+
+const eraseAll = () => {
+  localStorage.setItem(flowKey, '');
+  store.nodes = [];
+  store.edges = [];
+}
 
 const toggleDarkMode = () => {
   store.darkMode = !store.darkMode;

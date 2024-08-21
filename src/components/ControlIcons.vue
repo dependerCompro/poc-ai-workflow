@@ -1,12 +1,18 @@
-<script >
+<script>
 export default {
-  props: {
-    name: String
-  }
+    props: {
+        name: String
+    }
 }
 </script>
 
 <template>
+    <svg v-if="name === 'erase'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M3 21h18v-2H3v2zM16.95 4.95l-9 9-4.95 4.95 4.95 4.95 9-9 4.95-4.95-4.95-4.95zM5.83 19.17l-2.12-2.12 4.95-4.95 2.12 2.12-4.95 4.95zm12.36-6.36L13.41 9.41l2.12-2.12 4.95 4.95-2.12 2.12z"
+            fill="currentColor" />
+    </svg>
+
     <svg v-if="name === 'reset'" width="16" height="16" viewBox="0 0 32 32">
         <path d="M18 28A12 12 0 1 0 6 16v6.2l-3.6-3.6L1 20l6 6l6-6l-1.4-1.4L8 22.2V16a10 10 0 1 1 10 10Z" />
     </svg>
