@@ -7,7 +7,7 @@
       transition: 'background-color 0.2s ease',
     }" pattern-color="#aaa" :gap="16" />
 
-    <MiniMap />
+    <MiniMap pannable zoomable />
 
     <Controls position="top-right">
       <ControlButton title="Reset Transform" @click="resetTransform">
@@ -22,16 +22,16 @@
       </ControlButton>
     </Controls>
     <template #node-input-prompt="props">
-      <NodeComponent :data="props.data" :type="props.type"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type"/>
     </template>
     <template #node-input-data="props">
-      <NodeComponent :data="props.data" :type="props.type"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type"/>
     </template>
     <template #node-processor="props">
-      <NodeComponent :data="props.data" :type="props.type"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type"/>
     </template>
     <template #node-result-output="props">
-      <NodeComponent :data="props.data" :type="props.type"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type"/>
     </template>
   </VueFlow>
 </template>
@@ -89,16 +89,6 @@ const getNewEdgeId = (src, tgt) => {
   return src + "___" + tgt;
 }
 
-const updateFocusNodeData = (nodeId) => {
-  store.nodes.forEach((node) => {
-        if (node.id == nodeId) {
-          node.data.inFocus = true;
-        } else {
-          node.data.inFocus = false;
-        }
-    })
-}
-
 const onDrop = (event) => {
   event.preventDefault();
 
@@ -120,8 +110,7 @@ const onDrop = (event) => {
     },
   }
   nodes.value.push(newNode)
-  store.activeNodeId = nodeId;
-  updateFocusNodeData(nodeId);
+  store.updateFocusNodeData(nodeId);
 }
 
 const onDragOver = (event) => {
@@ -188,22 +177,15 @@ function onEdgeUpdate({ edge, connection }) {
 }
 
 onNodeClick((event) => {
-  store.activeNodeId = event.node.id;
-  updateFocusNodeData(event.node.id)
+  store.updateFocusNodeData(event.node.id)
 })
 
 onEdgeClick(() => {
-  store.activeNodeId = "";
-  // passing null to updateFocusNodeData so that inFocus
-  // is set to false for every node.
-  updateFocusNodeData('');
+  store.updateFocusNodeData('');
 })
 
 onPaneClick(() => {
-  store.activeNodeId = "";
-  // passing null to updateFocusNodeData so that inFocus
-  // is set to false for every node.
-  updateFocusNodeData('');
+  store.updateFocusNodeData('');
 })
 </script>
 

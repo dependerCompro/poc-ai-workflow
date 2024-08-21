@@ -25,6 +25,10 @@ import { NodeResizer } from '@vue-flow/node-resizer';
 import nodeConfig from '@/config/nodeConfig';
 
 const props = defineProps({
+  id: {
+    type: String,
+    required: true
+  },
   data: {
     type: Object,
     required: true
@@ -35,6 +39,7 @@ const props = defineProps({
   }
 })
 
+let debounceTimeout = null;
 const userInput = ref('')
 const store = useDragAndDropStore();
 const headContent = nodeConfig[props.type].nodeHeadContent;
@@ -45,17 +50,22 @@ function deleteEdgeWithNode(nodeId) {
 }
 
 const deleteNode = () => {
-    store.nodes = store.nodes.filter(obj => obj.id != store.activeNodeId);
-    deleteEdgeWithNode(store.activeNodeId);
+    store.nodes = store.nodes.filter(obj => obj.id != props.id);
+    deleteEdgeWithNode(props.id);
 }
 
 watch(userInput, (input) => {
-    store.nodes.forEach((node) => {
-        if (node.id == store.activeNodeId) {
-            node.data.userInput = input;
-        }
-    })
+    debounceUpdate(input);
 })
+
+const debounceUpdate = (input) => {
+    if (debounceTimeout) {
+        clearTimeout(debounceTimeout)
+    }
+    debounceTimeout = setTimeout(() => {
+        store.updateUserInputToNode(props.id, input);
+    }, 5000);
+}
 </script>
 
 <style scoped>
