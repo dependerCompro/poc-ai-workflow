@@ -7,10 +7,9 @@ export default {
 </script>
 
 <template>
-    <svg v-if="name === 'erase'" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg v-if="name === 'erase'" width="16" height="16" viewBox="0 0 24 24">
         <path
-            d="M3 21h18v-2H3v2zM16.95 4.95l-9 9-4.95 4.95 4.95 4.95 9-9 4.95-4.95-4.95-4.95zM5.83 19.17l-2.12-2.12 4.95-4.95 2.12 2.12-4.95 4.95zm12.36-6.36L13.41 9.41l2.12-2.12 4.95 4.95-2.12 2.12z"
-            fill="currentColor" />
+            d="M3 21h18v-2H3v2zM16.95 4.95l-9 9-4.95 4.95 4.95 4.95 9-9 4.95-4.95-4.95-4.95zM5.83 19.17l-2.12-2.12 4.95-4.95 2.12 2.12-4.95 4.95zm12.36-6.36L13.41 9.41l2.12-2.12 4.95 4.95-2.12 2.12z" />
     </svg>
 
     <svg v-if="name === 'reset'" width="16" height="16" viewBox="0 0 32 32">
