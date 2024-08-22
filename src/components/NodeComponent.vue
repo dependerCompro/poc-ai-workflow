@@ -6,7 +6,7 @@
             <p>{{ headContent }}</p>
         </div>
         <div class="node-wrapper__text-area">
-            <textarea v-model="userInput" :placeholder="textareaPlaceHolder"></textarea>
+            <textarea class="nodrag" v-model="userInput" :placeholder="textareaPlaceHolder"></textarea>
         </div>
     </div>
     <Handle
@@ -40,7 +40,7 @@ const props = defineProps({
 })
 
 let debounceTimeout = null;
-const userInput = ref('')
+const userInput = ref(props.data.userInput || '');
 const store = useDragAndDropStore();
 const headContent = nodeConfig[props.type].nodeHeadContent;
 const textareaPlaceHolder = nodeConfig[props.type].nodeTextareaPlaceholder;
