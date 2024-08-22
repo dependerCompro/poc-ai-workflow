@@ -5,7 +5,6 @@ export const useDragAndDropStore = defineStore("dragAndDropStore", {
     draggedType: null,
     isDragging: false,
     isDragOver: false,
-    darkMode: false,
     nodes: [],
     edges: [],
   }),

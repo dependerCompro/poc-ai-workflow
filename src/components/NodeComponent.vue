@@ -1,6 +1,6 @@
 <template>
     <NodeResizer v-if="props.data.inFocus" min-width="280" min-height="180" />
-    <div class="node-wrapper" :class="(store.darkMode) ? 'node-wrapper-dark': ''" :style="{'--border-color': nodeConfig[props.type].nodeBorderColor}">
+    <div class="node-wrapper" :class="(isDarkMode) ? 'node-wrapper-dark': ''" :style="{'--border-color': nodeConfig[props.type].nodeBorderColor}">
         <button v-if="props.data.inFocus" @click="deleteNode()" class="node-wrapper__close-button">×</button>
         <div class="node-wrapper__head">
             <p>{{ headContent }}</p>
@@ -36,6 +36,10 @@ const props = defineProps({
   type: {
     type: String,
     require: true
+  },
+  isDarkMode: {
+    type: Boolean,
+    required: true
   }
 })
 

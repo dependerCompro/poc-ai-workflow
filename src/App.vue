@@ -25,16 +25,16 @@
       </ControlButton>
     </Controls>
     <template #node-input-prompt="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark"/>
     </template>
     <template #node-input-data="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark"/>
     </template>
     <template #node-processor="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark"/>
     </template>
     <template #node-result-output="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark"/>
     </template>
   </VueFlow>
 </template>
@@ -59,21 +59,27 @@ const nodeCount = ref({
   "processor": 0,
   "result-output": 0
 })
-const flowKey = 'vue-flow--save-restore';
 let debounceTimeout = null;
+const flowKey = 'vue-flow--save-restore';
+const dark = ref(false);
+
 const draggedType = computed(() => store.draggedType)
 const isDragging = computed(() => store.isDragging)
 const isDragOver = computed(() => store.isDragOver)
 const nodes = computed(() => store.nodes)
 const edges = computed(() => store.edges)
-let dark = computed(() => store.darkMode)
-let vueFlowObj = computed(() => toObject())
+let vueFlowObj = computed(() => {
+  let flowObj = toObject();
+  flowObj.isDarkMode = dark.value;
+  return flowObj;
+})
 
 onBeforeMount(() => {
   const flow = JSON.parse(localStorage.getItem(flowKey));
   if (flow) {
     store.nodes = flow.nodes;
     store.edges = flow.edges;
+    dark.value = flow.isDarkMode;
     fromObject(flow)
   }
 })
@@ -82,16 +88,16 @@ watch(isDragging, (dragging) => {
   document.body.style.userSelect = dragging ? 'none' : ''
 })
 
-watch(vueFlowObj, () => {
-  debounceUpdate();
+watch(vueFlowObj, (val) => {
+  debounceUpdate(val);
 })
 
-const debounceUpdate = () => {
+const debounceUpdate = (val) => {
   if (debounceTimeout) {
     clearTimeout(debounceTimeout)
   }
   debounceTimeout = setTimeout(() => {
-    localStorage.setItem(flowKey, JSON.stringify(toObject()));
+    localStorage.setItem(flowKey, JSON.stringify(val));
   }, 500);
 }
 
@@ -102,7 +108,7 @@ const eraseAll = () => {
 }
 
 const toggleDarkMode = () => {
-  store.darkMode = !store.darkMode;
+  dark.value = !dark.value;
 }
 
 const resetTransform = () => {
