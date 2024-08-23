@@ -1,5 +1,5 @@
 <template>
-  <div class="dialog-overlay" @click="triggerBounce">
+  <modal class="dialog-overlay" @click="triggerBounce">
     <div class="dialog-box" :class="isBouncing ? 'bounce' : ''" @click.stop>
       <p>Do you want to ERASE ALL the workflow?</p>
       <div class="buttons">
@@ -7,7 +7,7 @@
         <button class="no-button" @click="closeModal">No</button>
       </div>
     </div>
-  </div>
+  </modal>
 </template>
 
 <script>
