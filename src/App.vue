@@ -3,7 +3,7 @@
   <VueFlow :nodes="nodes" :edges="edges" :class="{ dark }" class="basic-flow" @drop="onDrop" @dragover="onDragOver"
     @dragleave="onDragLeave" @edge-update="onEdgeUpdate" :min-zoom="0.2" :max-zoom="4">
     <Background :style="{
-      backgroundColor: isDragOver ? (dark ? '#2d3738': '#e7f3ff') : 'transparent',
+      backgroundColor: isDragOver ? (dark ? '#2d3738' : '#e7f3ff') : 'transparent',
       transition: 'background-color 0.2s ease',
     }" pattern-color="#aaa" :gap="16" />
 
@@ -25,16 +25,20 @@
       </ControlButton>
     </Controls>
     <template #node-input-prompt="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
+        @update-user-input-to-node="updateUserInputToNode" />
     </template>
     <template #node-input-data="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
+        @update-user-input-to-node="updateUserInputToNode" />
     </template>
     <template #node-processor="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
+        @update-user-input-to-node="updateUserInputToNode" />
     </template>
     <template #node-result-output="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark"/>
+      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
+        @update-user-input-to-node="updateUserInputToNode" />
     </template>
   </VueFlow>
 </template>
@@ -62,12 +66,12 @@ const nodeCount = ref({
 let debounceTimeout = null;
 const flowKey = 'vue-flow--save-restore';
 const dark = ref(false);
+const nodes = ref([]);
+const edges = ref([]);
 
 const draggedType = computed(() => store.draggedType)
 const isDragging = computed(() => store.isDragging)
 const isDragOver = computed(() => store.isDragOver)
-const nodes = computed(() => store.nodes)
-const edges = computed(() => store.edges)
 let vueFlowObj = computed(() => {
   let flowObj = toObject();
   flowObj.isDarkMode = dark.value;
@@ -77,8 +81,8 @@ let vueFlowObj = computed(() => {
 onBeforeMount(() => {
   const flow = JSON.parse(localStorage.getItem(flowKey));
   if (flow) {
-    store.nodes = flow.nodes;
-    store.edges = flow.edges;
+    nodes.value = flow.nodes;
+    edges.value = flow.edges;
     dark.value = flow.isDarkMode;
     fromObject(flow)
   }
@@ -103,8 +107,27 @@ const debounceUpdate = (val) => {
 
 const eraseAll = () => {
   localStorage.setItem(flowKey, '');
-  store.nodes = [];
-  store.edges = [];
+  nodes.value = [];
+  edges.value = [];
+}
+
+const updateFocusNodeData = (nodeId) => {
+  // if nodeId is '', it will set inFocus to false in each node.
+  nodes.value.forEach((node) => {
+    if (node.id == nodeId) {
+      node.data.inFocus = true;
+    } else {
+      node.data.inFocus = false;
+    }
+  });
+}
+
+const updateUserInputToNode = (nodeId, input) => {
+  nodes.value.forEach((node) => {
+    if (node.id == nodeId) {
+      node.data.userInput = input;
+    }
+  });
 }
 
 const toggleDarkMode = () => {
@@ -149,7 +172,7 @@ const onDrop = (event) => {
     },
   }
   nodes.value.push(newNode)
-  store.updateFocusNodeData(nodeId);
+  updateFocusNodeData(nodeId);
 }
 
 const onDragOver = (event) => {
@@ -167,7 +190,7 @@ const onDragLeave = () => {
 }
 
 function removeDuplicateEdges() {
-  store.edges = store.edges.filter((value, index, self) => 
+  edges.value = edges.value.filter((value, index, self) => 
     index === self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
   );
 }
@@ -207,7 +230,16 @@ onConnect((event) => {
 })
 
 function deleteEdgeWithId(edgeId) {
-  store.edges = store.edges.filter(obj => obj.id != edgeId);
+  edges.value = edges.value.filter(obj => obj.id != edgeId);
+}
+
+function deleteEdgesWithNode(nodeId) {
+  edges.value = edges.value.filter(obj => (obj.source != nodeId && obj.target != nodeId));
+}
+
+const deleteNode = (nodeId) => {
+  nodes.value = nodes.value.filter(obj => obj.id != nodeId);
+  deleteEdgesWithNode(nodeId);
 }
 
 function onEdgeUpdate({ edge, connection }) {
@@ -216,15 +248,15 @@ function onEdgeUpdate({ edge, connection }) {
 }
 
 onNodeClick((event) => {
-  store.updateFocusNodeData(event.node.id)
+  updateFocusNodeData(event.node.id)
 })
 
 onEdgeClick(() => {
-  store.updateFocusNodeData('');
+  updateFocusNodeData('');
 })
 
 onPaneClick(() => {
-  store.updateFocusNodeData('');
+  updateFocusNodeData('');
 })
 </script>
 
