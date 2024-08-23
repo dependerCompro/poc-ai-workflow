@@ -1,5 +1,6 @@
 <template>
   <SideBar />
+  <ConfirmEraseAllModal v-if="confirmEraseAll" @close-modal="confirmEraseAll = false" @erase-all="eraseAll" />
   <VueFlow :nodes="nodes" :edges="edges" :class="{ dark }" class="basic-flow" @drop="onDrop" @dragover="onDragOver"
     @dragleave="onDragLeave" @edge-update="onEdgeUpdate" :min-zoom="0.2" :max-zoom="4">
     <Background :style="{
@@ -10,7 +11,7 @@
     <MiniMap pannable zoomable />
 
     <Controls position="top-right">
-      <ControlButton title="Erase all" @click="eraseAll">
+      <ControlButton title="Erase all" @click="confirmEraseAll = true">
         <Icon name="erase" />
       </ControlButton>
       <ControlButton title="Reset Transform" @click="resetTransform">
@@ -49,10 +50,11 @@ import { VueFlow, useVueFlow, MarkerType } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { ControlButton, Controls } from '@vue-flow/controls'
 import { MiniMap } from '@vue-flow/minimap'
-import { useDragAndDropStore } from '@/stores/index.js';
+import { useDragAndDropStore } from '@/stores/index.js'
 import Icon from './components/ControlIcons'
 import SideBar from './components/SideBar'
-import NodeComponent from '@/components/NodeComponent';
+import NodeComponent from '@/components/NodeComponent'
+import ConfirmEraseAllModal from './components/ConfirmEraseAllModal'
 
 const { onNodeDragStop, onConnect, setViewport, toObject, fromObject, screenToFlowCoordinate, onNodeClick, onEdgeClick, onPaneClick } = useVueFlow()
 
@@ -68,6 +70,7 @@ const flowKey = 'vue-flow--save-restore';
 const dark = ref(false);
 const nodes = ref([]);
 const edges = ref([]);
+const confirmEraseAll = ref(false);
 
 const draggedType = computed(() => store.draggedType)
 const isDragging = computed(() => store.isDragging)
@@ -109,6 +112,7 @@ const eraseAll = () => {
   localStorage.setItem(flowKey, '');
   nodes.value = [];
   edges.value = [];
+  confirmEraseAll.value = false;
 }
 
 const updateFocusNodeData = (nodeId) => {
@@ -190,7 +194,7 @@ const onDragLeave = () => {
 }
 
 function removeDuplicateEdges() {
-  edges.value = edges.value.filter((value, index, self) => 
+  edges.value = edges.value.filter((value, index, self) =>
     index === self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
   );
 }
