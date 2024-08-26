@@ -15,14 +15,16 @@ export default {
   name: "ConfirmEraseAllModal",
   data() {
     return {
-      isBouncing: false
-    }
+      isBouncing: false,
+    };
   },
   methods: {
     confirmEraseAll() {
       this.$emit('erase-all');
+      this.closeModal();
     },
     closeModal() {
+      this.releaseFocus();
       this.$emit('close-modal');
     },
     triggerBounce() {
@@ -30,7 +32,49 @@ export default {
       setTimeout(() => {
         this.isBouncing = false;
       }, 500);
+    },
+    handleTabKey(e) {
+      const focusableElements = this.$el.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const firstFocusableElement = focusableElements[0];
+      const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          // If Shift + Tab is pressed
+          if (document.activeElement === firstFocusableElement) {
+            e.preventDefault();
+            lastFocusableElement.focus();
+          }
+        } else if (document.activeElement === lastFocusableElement) {
+          e.preventDefault();
+          firstFocusableElement.focus();
+        }
+      }
+    },
+    trapFocus() {
+      document.addEventListener('keydown', this.handleTabKey);
+      this.setInitialFocus();
+    },
+    releaseFocus() {
+      document.removeEventListener('keydown', this.handleTabKey);
+    },
+    setInitialFocus() {
+      // Focus on the first focusable element when the modal is opened
+      const focusableElements = this.$el.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus();
+      }
     }
+  },
+  mounted() {
+    this.trapFocus();
+  },
+  beforeUnmount() {
+    this.releaseFocus();
   }
 }
 </script>
