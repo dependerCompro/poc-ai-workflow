@@ -41,9 +41,10 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 0 16px;
-  background-color: cornflowerblue;
+  background-color: #5a6f87;
 
   .description {
+    margin-top: 48px;
     padding: 24px 0;
     border-bottom: 2px solid white;
     color: white;
@@ -58,9 +59,16 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      border-radius: 12px;
-      border: 2px solid wheat;
+      border-radius: 5px;
+      outline: none;
+      border: none;
       cursor: grab;
+      background-color: #ebeff2;
+    }
+
+    div:hover {
+      background-color: #0288d1;
+      color: white;
     }
   }
 }

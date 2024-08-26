@@ -1,47 +1,51 @@
 <template>
-  <SideBar @update-dragged-type="updateDraggedType" @update-isDragging="updateIsDragging" @update-isDragOver="updateIsDragOver"/>
-  <ConfirmEraseAllModal v-if="confirmEraseAll" @close-modal="confirmEraseAll = false" @erase-all="eraseAll" />
-  <VueFlow :nodes="nodes" :edges="edges" :class="{ dark }" class="basic-flow" @drop="onDrop" @dragover="onDragOver"
-    @dragleave="onDragLeave" @edge-update="onEdgeUpdate" :min-zoom="0.2" :max-zoom="4">
-    <Background :style="{
-      backgroundColor: isDragOver ? (dark ? '#2d3738' : '#e7f3ff') : 'transparent',
-      transition: 'background-color 0.2s ease',
-    }" pattern-color="#aaa" :gap="16" />
+  <AppHeader />
+  <main class="main">
+    <SideBar @update-dragged-type="updateDraggedType" @update-isDragging="updateIsDragging"
+      @update-isDragOver="updateIsDragOver" />
+    <ConfirmEraseAllModal v-if="confirmEraseAll" @close-modal="confirmEraseAll = false" @erase-all="eraseAll" />
+    <VueFlow :nodes="nodes" :edges="edges" :class="{ dark }" class="basic-flow" @drop="onDrop" @dragover="onDragOver"
+      @dragleave="onDragLeave" @edge-update="onEdgeUpdate" :min-zoom="0.2" :max-zoom="4">
+      <Background :style="{
+        backgroundColor: isDragOver ? (dark ? '#2d3738' : '#e7f3ff') : 'transparent',
+        transition: 'background-color 0.2s ease',
+      }" pattern-color="#aaa" :gap="16" />
 
-    <MiniMap pannable zoomable />
+      <MiniMap pannable zoomable />
 
-    <Controls position="top-right">
-      <ControlButton title="Erase all" @click="confirmEraseAll = true">
-        <Icon name="erase" />
-      </ControlButton>
-      <ControlButton title="Reset Transform" @click="resetTransform">
-        <Icon name="reset" />
-      </ControlButton>
-      <ControlButton title="Toggle Dark Mode" @click="toggleDarkMode">
-        <Icon v-if="dark" name="sun" />
-        <Icon v-else name="moon" />
-      </ControlButton>
-      <ControlButton title="Log `toObject`" @click="logToObject">
-        <Icon name="log" />
-      </ControlButton>
-    </Controls>
-    <template #node-input-prompt="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
-        @update-user-input-to-node="updateUserInputToNode" />
-    </template>
-    <template #node-input-data="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
-        @update-user-input-to-node="updateUserInputToNode" />
-    </template>
-    <template #node-processor="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
-        @update-user-input-to-node="updateUserInputToNode" />
-    </template>
-    <template #node-result-output="props">
-      <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
-        @update-user-input-to-node="updateUserInputToNode" />
-    </template>
-  </VueFlow>
+      <Controls position="top-right">
+        <ControlButton title="Erase all" @click="confirmEraseAll = true">
+          <Icon name="erase" />
+        </ControlButton>
+        <ControlButton title="Reset Transform" @click="resetTransform">
+          <Icon name="reset" />
+        </ControlButton>
+        <ControlButton title="Toggle Dark Mode" @click="toggleDarkMode">
+          <Icon v-if="dark" name="sun" />
+          <Icon v-else name="moon" />
+        </ControlButton>
+        <ControlButton title="Log `toObject`" @click="logToObject">
+          <Icon name="log" />
+        </ControlButton>
+      </Controls>
+      <template #node-input-prompt="props">
+        <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
+          @update-user-input-to-node="updateUserInputToNode" />
+      </template>
+      <template #node-input-data="props">
+        <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
+          @update-user-input-to-node="updateUserInputToNode" />
+      </template>
+      <template #node-processor="props">
+        <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
+          @update-user-input-to-node="updateUserInputToNode" />
+      </template>
+      <template #node-result-output="props">
+        <NodeComponent :id="props.id" :data="props.data" :type="props.type" :isDarkMode="dark" @delete-node="deleteNode"
+          @update-user-input-to-node="updateUserInputToNode" />
+      </template>
+    </VueFlow>
+  </main>
 </template>
 
 <script setup>
@@ -52,6 +56,7 @@ import { ControlButton, Controls } from '@vue-flow/controls'
 import { MiniMap } from '@vue-flow/minimap'
 import Icon from './components/ControlIcons'
 import SideBar from './components/SideBar'
+import AppHeader from './components/AppHeader'
 import NodeComponent from '@/components/NodeComponent'
 import ConfirmEraseAllModal from './components/ConfirmEraseAllModal'
 
@@ -279,7 +284,9 @@ onPaneClick(() => {
 @import '@vue-flow/core/dist/theme-default.css';
 @import './main.css';
 
-#app {
+.main {
+  background-color: #ebeff2;
   display: flex;
+  height: calc(100% - 56px);
 }
 </style>
