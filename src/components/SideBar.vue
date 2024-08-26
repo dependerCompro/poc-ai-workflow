@@ -12,30 +12,22 @@
 </template>
 
 <script>
-import { useDragAndDropStore } from '@/stores/index.js';
-
 export default {
   name: 'SideBar',
-  data() {
-    return {
-      store: useDragAndDropStore()
-    }
-  },
   methods: {
     onDragStart(event, type) {
       if (event.dataTransfer) {
         event.dataTransfer.setData('application/vueflow', type)
         event.dataTransfer.effectAllowed = 'move'
       }
-      this.store.draggedType = type
-      this.store.isDragging = true
-
+      this.$emit('update-dragged-type', type);
+      this.$emit('update-isDragging', true);      
       document.addEventListener('drop', this.onDragEnd)
     },
     onDragEnd() {
-      this.store.isDragging = false
-      this.store.isDragOver = false
-      this.store.draggedType = null
+      this.$emit('update-isDragging', false);
+      this.$emit('update-isDragOver', false);
+      this.$emit('update-dragged-type', null);
       document.removeEventListener('drop', this.onDragEnd)
     }
 

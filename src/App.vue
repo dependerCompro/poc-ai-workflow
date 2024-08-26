@@ -1,5 +1,5 @@
 <template>
-  <SideBar />
+  <SideBar @update-dragged-type="updateDraggedType" @update-isDragging="updateIsDragging" @update-isDragOver="updateIsDragOver"/>
   <ConfirmEraseAllModal v-if="confirmEraseAll" @close-modal="confirmEraseAll = false" @erase-all="eraseAll" />
   <VueFlow :nodes="nodes" :edges="edges" :class="{ dark }" class="basic-flow" @drop="onDrop" @dragover="onDragOver"
     @dragleave="onDragLeave" @edge-update="onEdgeUpdate" :min-zoom="0.2" :max-zoom="4">
@@ -50,7 +50,6 @@ import { VueFlow, useVueFlow, MarkerType } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { ControlButton, Controls } from '@vue-flow/controls'
 import { MiniMap } from '@vue-flow/minimap'
-import { useDragAndDropStore } from '@/stores/index.js'
 import Icon from './components/ControlIcons'
 import SideBar from './components/SideBar'
 import NodeComponent from '@/components/NodeComponent'
@@ -58,7 +57,6 @@ import ConfirmEraseAllModal from './components/ConfirmEraseAllModal'
 
 const { onNodeDragStop, onConnect, setViewport, toObject, fromObject, screenToFlowCoordinate, onNodeClick, onEdgeClick, onPaneClick } = useVueFlow()
 
-const store = useDragAndDropStore()
 const nodeCount = ref({
   "input-prompt": 0,
   "input-data": 0,
@@ -71,10 +69,10 @@ const dark = ref(false);
 const nodes = ref([]);
 const edges = ref([]);
 const confirmEraseAll = ref(false);
+const draggedType = ref(null);
+const isDragging = ref(false);
+const isDragOver = ref(false);
 
-const draggedType = computed(() => store.draggedType)
-const isDragging = computed(() => store.isDragging)
-const isDragOver = computed(() => store.isDragOver)
 let vueFlowObj = computed(() => {
   let flowObj = toObject();
   flowObj.isDarkMode = dark.value;
@@ -134,6 +132,18 @@ const updateUserInputToNode = (nodeId, input) => {
   });
 }
 
+const updateIsDragging = (val) => {
+  isDragging.value = val;
+}
+
+const updateIsDragOver = (val) => {
+  isDragOver.value = val;
+}
+
+const updateDraggedType = (draggedTypeData) => {
+  draggedType.value = draggedTypeData;
+}
+
 const toggleDarkMode = () => {
   dark.value = !dark.value;
 }
@@ -182,7 +192,7 @@ const onDrop = (event) => {
 const onDragOver = (event) => {
   event.preventDefault()
   if (draggedType.value) {
-    store.isDragOver = true
+    updateIsDragOver(true);
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = 'move'
     }
@@ -190,7 +200,7 @@ const onDragOver = (event) => {
 }
 
 const onDragLeave = () => {
-  store.isDragOver = false
+  updateIsDragOver(false);
 }
 
 function removeDuplicateEdges() {
