@@ -287,6 +287,6 @@ onPaneClick(() => {
 .main {
   background-color: #ebeff2;
   display: flex;
-  height: calc(100% - 56px);
+  height: calc(100% - 58px);
 }
 </style>

@@ -38,6 +38,9 @@ export default {
 <style scoped>
 .sidebar-aside {
   display: flex;
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  border-right: 2px solid white;
   flex-direction: column;
   align-items: center;
   padding: 0 16px;
