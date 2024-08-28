@@ -100,8 +100,8 @@ const debounceUpdate = (input) => {
   }
 
   .node-wrapper__text-area {
-    flex: 1;
     display: flex;
+    flex: 1;
     flex-direction: column;
     width: 100%;
     height: 100%;
