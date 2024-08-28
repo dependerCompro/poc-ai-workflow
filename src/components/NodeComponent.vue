@@ -86,8 +86,8 @@ const debounceUpdate = (input) => {
     font-size: 16px;
     font-weight: 600;
     background-color: rgb(255, 96, 96);
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     position: absolute;
     left: 0;
@@ -100,7 +100,7 @@ const debounceUpdate = (input) => {
   }
 
   .node-wrapper__text-area {
-    display: flex;
+    display: flex !important;
     flex: 1;
     flex-direction: column;
     width: 100%;
